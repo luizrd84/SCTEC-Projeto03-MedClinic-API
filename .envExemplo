@@ -2,7 +2,8 @@ PORT=3333
 
 # Segredo usado para assinar/validar o Token JWT
 JWT_SECRET=uma-chave-bem-secreta-troque-isso
-JWT_EXPIRES_IN=1d
+JWT_TOKEN_EXPIRES_IN=15m
+JWT_REFRESHTOKEN_EXPIRES_IN_HOURS=8
 
 DB_HOST=localhost
 DB_PORT=5432

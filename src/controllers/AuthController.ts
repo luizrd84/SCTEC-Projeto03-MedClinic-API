@@ -24,7 +24,8 @@ export class AuthController {
         const resultado = await this.authService.login(email, senha);
 
         return res.json({
-            token: resultado.token,
+            accessToken: resultado.accessToken,
+            refreshToken: resultado.refreshToken,
 
             usuario: {
                 id: resultado.usuario.id,
@@ -47,6 +48,42 @@ export class AuthController {
         const usuario = this.authService.me(req.usuario);
 
         return res.status(200).json(usuario);
+    }
+
+
+    //POST /auth/refresh
+    async refresh(req: Request, res: Response) {
+
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            return res.status(400).json({
+                erro: "Refresh token é obrigatório."
+            });
+        }
+
+        const resultado =
+            await this.authService.refresh(refreshToken);
+
+        return res.status(200).json(resultado);
+    }
+
+
+    //POST /auth/logout
+    async logout(req: Request, res: Response) {
+
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            return res.status(400).json({
+                erro: "Refresh token é obrigatório."
+            });
+        }
+
+        const resultado =
+            await this.authService.logout(refreshToken);
+
+        return res.status(200).json(resultado);
     }
 
         
