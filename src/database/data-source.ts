@@ -1,34 +1,38 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const {
+    DB_HOST,
+    DB_PORT,
+    DB_USERNAME,
+    DB_PASSWORD,
+    DB_DATABASE,
+    DB_SSL,
+} = process.env;
+
+if (!DB_HOST || !DB_USERNAME || !DB_PASSWORD || !DB_DATABASE) {
+    throw new Error('Variáveis de ambiente do banco de dados não configuradas.');
+}
 
 export const AppDataSource = new DataSource({
-
     type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'postgres',
-    password: 'postgres',
-    database: 'db_produtos',
+
+    host: DB_HOST,
+    port: Number(DB_PORT) || 5432,
+    username: DB_USERNAME,
+    password: DB_PASSWORD,
+    database: DB_DATABASE,
+
+    ssl: DB_SSL === 'true'
+        ? { rejectUnauthorized: false }
+        : false,
+
     synchronize: true,
     logging: true,
     logger: 'advanced-console',
+
     entities: ['src/entities/*.ts'],
-
-})
-
-/*
-export const AppDataSource = new DataSource({
-    type: 'postgres',
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT) || 5432,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    username: process.env.DB_USERNAME,
-    ssl: process.env.DB_SSL === "true" ? 
-        {rejectUnauthorized: false} : false,
-    synchronize: true,
-    logging: false,
-    entities: [Usuario, Paciente, Medico, Consulta]
-
 });
-*/

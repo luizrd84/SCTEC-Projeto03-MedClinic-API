@@ -1,0 +1,13 @@
+PORT=3333
+
+# Segredo usado para assinar/validar o Token JWT
+JWT_SECRET=uma-chave-bem-secreta-troque-isso
+JWT_EXPIRES_IN=1d
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=password123
+DB_DATABASE=medclinicdb
+
+DB_SSL=false #usar true para o aiwen e false se for local
