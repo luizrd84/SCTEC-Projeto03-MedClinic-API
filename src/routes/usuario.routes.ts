@@ -3,24 +3,32 @@ import { Router } from "express";
 import { asyncHandler } from "../middlewares/asyncHandler";
 //import { CreateCategoryDto } from "../dtos/CreateCategoryDto";
 import { validateDto } from "../middlewares/validateDTO";
+import { UsuarioRepository } from "../repositories/UsuarioRepository";
+import { UsuarioController } from "../controllers/UsuarioController";
+import { authMiddleware } from "../middlewares/authMiddleware";
+import { roleMiddleware } from "../middlewares/roleMiddleware";
+import { UsuarioRole } from "../entities/Usuario";
 
-const userRoutes = Router();
+const usuarioRoutes = Router();
 
-//const categoryController = new CategoryController();
+const usuarioRepository = new UsuarioRepository();
 
-/*categoryRoutes.post(
-    "/categories",
-    validateDto(CreateCategoryDto),
-    asyncHandler(
-        (req, res) => categoryController.create(req, res)
-    )
-)
+const usuarioController = new UsuarioController(usuarioRepository);
 
-categoryRoutes.get(
-    "/categories/:id",
-    asyncHandler(
-        (req, res) => categoryController.findOne(req, res)
-    )
-)
+usuarioRoutes.post(
+    "/register/gerente", 
+    authMiddleware,
+    roleMiddleware(UsuarioRole.GERENTE),
+    (req, res) => usuarioController.registrarGerente(req, res)
+);
+    
+export { usuarioRoutes };
+
+
+/* Depois vou ter que mudar para isso:
+const usuarioRepository = new UsuarioRepository();
+
+const usuarioService = new UsuarioService(usuarioRepository);
+
+const usuarioController = new UsuarioController(usuarioService);
 */
-export default userRoutes;
