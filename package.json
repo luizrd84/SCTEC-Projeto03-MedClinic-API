@@ -7,7 +7,9 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "typeorm": "ts-node ./node_modules/typeorm/cli.js"
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "db:schema": "psql -U postgres -d medclinicdb -f src/database/schema.sql",
+    "seed:admin": "ts-node src/scripts/createAdmin.ts"
   },
   "keywords": [],
   "author": "",

@@ -4,6 +4,7 @@ import { gerarToken, gerarRefreshToken } from "../utils/jwt";
 import { TokenPayload } from "../utils/jwt";
 import { RefreshTokenRepository } from "../repositories/RefreshTokenRepository";
 import dotenv from "dotenv";
+import { AppError } from "../errors/AppError";
 
 export class AuthService {
 
@@ -19,13 +20,19 @@ export class AuthService {
         const usuario = await this.usuarioRepository.findOneBy({ email });
 
         if (!usuario) {
-            throw new Error("Credenciais inválidas");
+            throw new AppError(
+                "Credenciais inválidas",
+                401
+            );
         }
 
         const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
 
         if (!senhaCorreta) {
-            throw new Error("Credenciais inválidas");
+            throw new AppError(
+                "Credenciais inválidas",
+                401
+            );
         }
 
         const accessToken = gerarToken({
@@ -69,15 +76,24 @@ export class AuthService {
             await this.refreshTokenRepository.findByToken(refreshToken);
 
         if (!tokenSalvo) {
-            throw new Error("Refresh token inválido");
+            throw new AppError(
+                "Refresh token inválido",
+                401
+            );
         }
 
         if (tokenSalvo.revogadoEm) {
-            throw new Error("Refresh token revogado");
+            throw new AppError(
+                "Refresh token revogado",
+                401
+            );
         }
 
         if (tokenSalvo.expiraEm < new Date()) {
-            throw new Error("Refresh token expirado");
+            throw new AppError(
+                "Refresh token expirado",
+                401
+            );
         }
 
         const accessToken = gerarToken({

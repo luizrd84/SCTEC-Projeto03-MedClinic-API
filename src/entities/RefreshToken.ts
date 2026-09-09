@@ -27,7 +27,12 @@ export class RefreshToken {
     @Column("uuid")
     usuarioId!: string;
 
-    @ManyToOne(() => Usuario)
+      @ManyToOne(
+        () => Usuario,
+        {
+            onDelete: "CASCADE"
+        }
+    )
     @JoinColumn({ name: "usuarioId" })
     usuario!: Usuario;
 

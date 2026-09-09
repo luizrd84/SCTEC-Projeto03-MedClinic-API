@@ -1,10 +1,10 @@
-
 import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn
 } from 'typeorm';
+import { MinLength } from "class-validator";
 
 export enum UsuarioRole {
     ADMIN = "ADMIN", 
@@ -23,6 +23,7 @@ export class Usuario {
     @Column("varchar")
     email!: string;
 
+    @MinLength(6)
     @Column("varchar")
     senha!: string;    
 
