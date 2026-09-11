@@ -30,7 +30,7 @@ export const AppDataSource = new DataSource({
         ? { rejectUnauthorized: false }
         : false,
 
-    synchronize: true,
+    synchronize: false,
     logging: true,
     logger: 'advanced-console',
 

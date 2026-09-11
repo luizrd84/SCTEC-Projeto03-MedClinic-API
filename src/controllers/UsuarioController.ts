@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { UsuarioService } from "../services/UsuarioService";
 import { UsuarioRole } from "../entities/Usuario";
+import { CriarUsuarioDto } from "../entities/DTOs/CriarUsuarioDto";
+import { UsuarioResponseDto } from "../entities/DTOs/UsuarioResponseDto";
+import { UsuarioIdParamDto } from "../entities/DTOs/UsuarioIdParamDto";
+import { AlterarSenhaDto } from "../entities/DTOs/AlterarSenhaDto";
 
 export class UsuarioController {
 
@@ -16,14 +20,8 @@ export class UsuarioController {
         role: UsuarioRole
     ) {
 
-        const { nome, email, senha } = req.body;
-
-        if (!nome || !email || !senha) {
-            return res.status(400).json({
-                erro: "nome, email e senha são obrigatórios."
-            });
-        }
-
+        const { nome, email, senha } = req.body as CriarUsuarioDto;
+       
         try {
 
             const usuario =
@@ -57,22 +55,22 @@ export class UsuarioController {
     }
 
 
+ 
     async buscarTodosOsUsuarios(
         req: Request,
         res: Response
     ) {
+        const usuarios = await this.usuarioService.buscarTodosOsUsuarios();
 
-        const usuarios =
-            await this.usuarioService.buscarTodosOsUsuarios();
-
-        return res.status(200).json(
+       const usuariosResponse: UsuarioResponseDto[] =
             usuarios.map(usuario => ({
                 id: usuario.id,
                 nome: usuario.nome,
                 email: usuario.email,
                 role: usuario.role
-            }))
-        );
+            }));
+
+        return res.status(200).json(usuariosResponse);
     }
 
 
@@ -80,25 +78,19 @@ export class UsuarioController {
         req: Request,
         res: Response
     ) {
-
-        const { id } = req.params;
-
-        if (!id || Array.isArray(id)) {
-            return res.status(400).json({
-                erro: "ID do usuário é obrigatório."
-            });
-        }
+        const { id } = req.params as { id: string };
 
         const usuario =
             await this.usuarioService.consultarUsuario(id);
 
-
-        return res.status(200).json({
+        const usuarioResponse: UsuarioResponseDto = {
             id: usuario.id,
             nome: usuario.nome,
             email: usuario.email,
             role: usuario.role
-        });
+        };
+
+        return res.status(200).json(usuarioResponse);
     }
 
 
@@ -107,13 +99,7 @@ export class UsuarioController {
         res: Response
     ) {
 
-        const { id } = req.params;
-
-        if (!id || Array.isArray(id)) {
-            return res.status(400).json({
-                erro: "ID do usuário é obrigatório."
-            });
-        }
+        const { id } = req.params as { id: string };
 
         const usuarioLogado = req.usuario!;
 
@@ -131,14 +117,8 @@ export class UsuarioController {
         res: Response
     ) {
 
-        const { senhaAtual, novaSenha } = req.body;
-
-        if (!senhaAtual || !novaSenha) {
-            return res.status(400).json({
-                erro: "senhaAtual e novaSenha são obrigatórias."
-            });
-        }
-
+        const { senhaAtual, novaSenha } = req.body as AlterarSenhaDto;
+        
         const usuarioLogado = req.usuario!;
 
         await this.usuarioService.alterarSenha(

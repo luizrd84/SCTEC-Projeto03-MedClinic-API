@@ -3,28 +3,40 @@ import { validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../errors/AppError";
 
-export function validateDto(dtoClass: ClassConstructor<object>) {
-
+export function validateDto(
+    dtoClass: ClassConstructor<object>,
+    source: "body" | "params" = "body"
+) {
     return async (req: Request, res: Response, next: NextFunction) => {
-        const dto = plainToInstance(dtoClass, req.body);
+
+        const data = source === "body"
+            ? req.body
+            : req.params;
+
+        const dto = plainToInstance(dtoClass, data);
 
         const errors = await validate(dto);
 
-        if(errors.length > 0) {
-            const validationErros = 
-                errors.map(error => ({
-                    fields: error.property,
-                    messages: Object.values(
-                        error.constraints ?? {}
-                    )
-                }));
-            
-            throw new AppError(JSON.stringify(validationErros),400);
+        if (errors.length > 0) {
+            const validationErrors = errors.map(error => ({
+                field: error.property,
+                messages: Object.values(
+                    error.constraints ?? {}
+                )
+            }));
+
+            throw new AppError(
+                JSON.stringify(validationErrors),
+                400
+            );
         }
 
-        req.body = dto;
+        if (source === "body") {
+            req.body = dto;
+        } else {
+            req.params = dto as any;
+        }
 
         next();
-    }
-
+    };
 }

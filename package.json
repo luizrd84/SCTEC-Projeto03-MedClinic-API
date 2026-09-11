@@ -8,8 +8,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
-    "db:schema": "psql -U postgres -d medclinicdb -f src/database/schema.sql",
-    "seed:admin": "ts-node src/scripts/createAdmin.ts"
+    "schema": "tsx src/database/createSchema.ts",
+    "seed:admin": "ts-node src/database/createAdmin.ts"
   },
   "keywords": [],
   "author": "",

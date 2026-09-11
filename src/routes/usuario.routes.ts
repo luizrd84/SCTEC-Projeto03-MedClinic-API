@@ -9,6 +9,8 @@ import { roleMiddleware } from "../middlewares/roleMiddleware";
 import { UsuarioRole } from "../entities/Usuario";
 import { UsuarioService } from "../services/UsuarioService";
 import { AlterarSenhaDto } from "../entities/DTOs/AlterarSenhaDto";
+import { CriarUsuarioDto } from "../entities/DTOs/CriarUsuarioDto";
+import { UsuarioIdParamDto } from "../entities/DTOs/UsuarioIdParamDto";
 
 const usuarioRoutes = Router();
 
@@ -27,6 +29,7 @@ usuarioRoutes.post(
     "/register/gerente",
     authMiddleware,
     roleMiddleware(UsuarioRole.ADMIN),
+    validateDto(CriarUsuarioDto),
     (req, res) =>
         usuarioController.registrarUsuario(
             req,
@@ -40,6 +43,7 @@ usuarioRoutes.post(
     "/register/atendente",
     authMiddleware,
     roleMiddleware(UsuarioRole.ADMIN, UsuarioRole.GERENTE),
+    validateDto(CriarUsuarioDto),
     (req, res) =>
         usuarioController.registrarUsuario(
             req,
@@ -63,6 +67,7 @@ usuarioRoutes.get(
         UsuarioRole.ADMIN,
         UsuarioRole.GERENTE
     ),
+    validateDto(UsuarioIdParamDto, "params"),
     asyncHandler((req, res) =>
         usuarioController.consultarUsuario(req, res)
     )
@@ -113,6 +118,7 @@ usuarioRoutes.delete(
         UsuarioRole.ADMIN,
         UsuarioRole.GERENTE
     ),
+    validateDto(UsuarioIdParamDto, "params"),
     asyncHandler((req, res) =>
         usuarioController.deletarUsuario(req, res)
     )

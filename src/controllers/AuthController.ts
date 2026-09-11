@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/AuthService";
-
+import { LoginDto } from "../entities/DTOs/LoginDto";
+import { RefreshTokenDto } from "../entities/DTOs/RefreshTokenDto";
 
 export class AuthController {
 
@@ -13,13 +14,7 @@ export class AuthController {
 
     //POST /auth/login
     async login(req: Request, res: Response) {
-       const { email, senha } = req.body;
-
-        if (!email || !senha) {
-            return res.status(400).json({
-                erro: "email e senha são obrigatórios."
-            });
-        }
+        const { email, senha } = req.body as LoginDto;
 
         const resultado = await this.authService.login(email, senha);
 
@@ -54,13 +49,7 @@ export class AuthController {
     //POST /auth/refresh
     async refresh(req: Request, res: Response) {
 
-        const { refreshToken } = req.body;
-
-        if (!refreshToken) {
-            return res.status(400).json({
-                erro: "Refresh token é obrigatório."
-            });
-        }
+        const { refreshToken } = req.body as RefreshTokenDto;
 
         const resultado =
             await this.authService.refresh(refreshToken);
@@ -72,13 +61,7 @@ export class AuthController {
     //POST /auth/logout
     async logout(req: Request, res: Response) {
 
-        const { refreshToken } = req.body;
-
-        if (!refreshToken) {
-            return res.status(400).json({
-                erro: "Refresh token é obrigatório."
-            });
-        }
+        const { refreshToken } = req.body as RefreshTokenDto;
 
         const resultado =
             await this.authService.logout(refreshToken);

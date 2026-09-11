@@ -22,8 +22,7 @@ export class Usuario {
 
     @Column("varchar")
     email!: string;
-
-    @MinLength(6)
+    
     @Column("varchar")
     senha!: string;    
 
